@@ -32,7 +32,11 @@ services:
       DEFAULT_FOLDER: /photos
       PHOTOS_HOST_DIR: ${PHOTOS_DIR:-./photos} # shown in the app so you can see what is mounted
     volumes:
-      - ${PHOTOS_DIR:-./photos}:/photos:ro
+      - type: bind
+        source: ~/Desktop
+        target: /photos
+        read_only: true
+      #- ${PHOTOS_DIR:-./photos}:/photos:ro
       - thumbs:/cache
     depends_on:
       mongo:
