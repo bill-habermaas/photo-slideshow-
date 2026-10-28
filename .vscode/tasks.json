@@ -1,0 +1,84 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "docker: build & start all",
+      "detail": "Build the images (runs the unit tests) and start mongo + api + web. Open http://localhost:3000",
+      "type": "shell",
+      "command": "docker compose up -d --build",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "docker: stop all",
+      "type": "shell",
+      "command": "docker compose down",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "docker: follow logs",
+      "type": "shell",
+      "command": "docker compose logs -f --tail=100",
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "mongo: start (docker)",
+      "detail": "Only MongoDB, for debugging the Go API locally",
+      "type": "shell",
+      "command": "docker compose up -d --wait mongo",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "web: install",
+      "type": "shell",
+      "command": "npm ci",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "problemMatcher": []
+    },
+    {
+      "label": "web: dev server",
+      "detail": "Vite on :5173, proxying /api to the Go API on :8080",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "vite",
+        "pattern": { "regexp": "^__never_matches__$" },
+        "background": {
+          "activelyMatches": true,
+          "beginsPattern": "VITE",
+          "endsPattern": "Local:"
+        }
+      }
+    },
+    {
+      "label": "test: backend (Go)",
+      "type": "shell",
+      "command": "go test -v ./...",
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "group": "test",
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "test: frontend (Vitest)",
+      "type": "shell",
+      "command": "npm test",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "test: all",
+      "dependsOn": ["test: backend (Go)", "test: frontend (Vitest)"],
+      "dependsOrder": "sequence",
+      "group": { "kind": "test", "isDefault": true },
+      "problemMatcher": []
+    }
+  ]
+}

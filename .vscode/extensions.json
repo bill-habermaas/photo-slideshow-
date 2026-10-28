@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "golang.go",
+    "vitest.explorer",
+    "ms-azuretools.vscode-containers",
+    "mongodb.mongodb-vscode",
+    "esbenp.prettier-vscode"
+  ]
+}

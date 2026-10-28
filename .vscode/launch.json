@@ -1,0 +1,53 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API: debug Go backend",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/backend",
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "env": {
+        "ADDR": ":8080",
+        "MONGO_URI": "mongodb://localhost:27017",
+        "MONGO_DB": "photo_slideshow"
+      },
+      "preLaunchTask": "mongo: start (docker)"
+    },
+    {
+      "name": "API: debug Go unit tests",
+      "type": "go",
+      "request": "launch",
+      "mode": "test",
+      "program": "${workspaceFolder}/backend"
+    },
+    {
+      "name": "Web: debug React in Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/frontend",
+      "preLaunchTask": "web: dev server"
+    },
+    {
+      "name": "Web: debug Vitest (current file)",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/frontend",
+      "program": "${workspaceFolder}/frontend/node_modules/vitest/vitest.mjs",
+      "args": ["run", "${relativeFile}"],
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full stack: debug API + Web",
+      "configurations": ["API: debug Go backend", "Web: debug React in Chrome"],
+      "stopAll": true
+    }
+  ]
+}

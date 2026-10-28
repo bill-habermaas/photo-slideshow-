@@ -1,0 +1,53 @@
+# Photo Slideshow: MongoDB + Go API + React web (nginx).
+#
+#   docker compose up -d --build      then open http://localhost:3000
+#
+# Set PHOTOS_DIR (in .env or the shell) to the folder on your machine to scan;
+# it is mounted read-only at /photos inside the API container.
+name: photo-slideshow
+
+services:
+  mongo:
+    image: mongo:8
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "127.0.0.1:${MONGO_PORT:-27017}:27017" # localhost only: for local `go run` / VS Code debugging and the MongoDB extension
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  api:
+    build: ./backend
+    image: photo-slideshow-api:latest
+    restart: unless-stopped
+    environment:
+      MONGO_URI: mongodb://mongo:27017
+      MONGO_DB: photo_slideshow
+      PHOTO_ROOT: /photos
+      DEFAULT_FOLDER: /photos
+      PHOTOS_HOST_DIR: ${PHOTOS_DIR:-./photos} # shown in the app so you can see what is mounted
+    volumes:
+      - ${PHOTOS_DIR:-./photos}:/photos:ro
+      - thumbs:/cache
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  web:
+    build: ./frontend
+    image: photo-slideshow-web:latest
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-3000}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  mongo-data:
+  thumbs:

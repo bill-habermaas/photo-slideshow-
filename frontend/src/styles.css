@@ -1,0 +1,650 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #14130f;
+  --panel: #1d1b17;
+  --panel-2: #26231e;
+  --line: #36322b;
+  --text: #ece6da;
+  --muted: #9c9486;
+  --accent: #e8b04b;
+  --accent-ink: #1a1408;
+  --danger: #f07a68;
+  --ok: #8cc79a;
+  --radius: 10px;
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --display: 'Fraunces', Georgia, serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 var(--font);
+}
+
+code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  color: var(--accent);
+}
+
+/* ---- buttons & fields --------------------------------------------------- */
+
+.btn {
+  font: inherit;
+  font-weight: 600;
+  border-radius: var(--radius);
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--line);
+  background: var(--panel-2);
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+.btn:hover:not(:disabled) {
+  border-color: var(--muted);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-primary:hover:not(:disabled) {
+  background: #f2c065;
+  border-color: #f2c065;
+}
+.btn-ghost {
+  background: transparent;
+}
+
+input[type='text'],
+input[type='number'] {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.5rem 0.65rem;
+  width: 100%;
+  min-width: 0;
+}
+input:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---- layout ------------------------------------------------------------- */
+
+.app {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 16px 48px;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 14px 0;
+  background: linear-gradient(var(--bg) 75%, transparent);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.brand-mark {
+  width: 22px;
+  height: 16px;
+  border: 2px solid var(--accent);
+  border-radius: 4px;
+  position: relative;
+}
+.brand-mark::after {
+  content: '';
+  position: absolute;
+  inset: 4px 9px 4px 3px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.count {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.hero {
+  max-width: 640px;
+  margin: 12vh auto 0;
+  text-align: center;
+}
+.hero h1 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.1;
+  margin: 0 0 0.75rem;
+}
+.lede {
+  color: var(--muted);
+  margin: 0 auto 2rem;
+  max-width: 34rem;
+}
+.hero .folder-picker {
+  text-align: left;
+}
+
+.picker-bar {
+  margin: 8px 0 20px;
+}
+
+.folder-picker {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+}
+.folder-label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.folder-row {
+  display: flex;
+  gap: 8px;
+}
+.folder-row input {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+.hint {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* ---- directory selection dialog ---------------------------------------- */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(8, 7, 5, 0.72);
+  backdrop-filter: blur(3px);
+  animation: fade-in 0.15s ease;
+}
+.modal {
+  width: min(560px, 100%);
+  max-height: min(640px, calc(100vh - 32px));
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  outline: none;
+}
+.modal-head,
+.modal-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+}
+.modal-head {
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+.modal-head h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 1.3rem;
+}
+.modal-foot {
+  border-top: 1px solid var(--line);
+  justify-content: flex-end;
+}
+.btn-icon {
+  padding: 0.35rem 0.6rem;
+}
+.photo-note {
+  margin-right: auto;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.folder-dialog-path {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px 4px;
+}
+.folder-dialog-path input {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+.folder-dialog-body {
+  flex: 1;
+  min-height: 160px;
+  overflow: auto;
+  padding: 4px 12px 12px;
+}
+.folder-dialog-body .error {
+  margin: 8px 4px;
+}
+.folder-icon {
+  display: inline-block;
+  width: 16px;
+  height: 12px;
+  margin-right: 10px;
+  vertical-align: -1px;
+  border-radius: 2px 3px 3px 3px;
+  background: var(--accent);
+  opacity: 0.85;
+  position: relative;
+}
+.folder-icon::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -3px;
+  width: 7px;
+  height: 4px;
+  border-radius: 2px 2px 0 0;
+  background: inherit;
+}
+.folder-icon.up {
+  background: var(--muted);
+}
+.folder-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.folder-list button {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.folder-list button:hover {
+  background: var(--panel-2);
+}
+.muted {
+  color: var(--muted);
+  padding: 6px 8px;
+}
+
+.error {
+  color: var(--danger);
+  background: rgba(240, 122, 104, 0.08);
+  border: 1px solid rgba(240, 122, 104, 0.3);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+}
+.empty {
+  color: var(--muted);
+  text-align: center;
+  padding: 3rem 0;
+}
+
+/* ---- photo list ---------------------------------------------------------- */
+
+.list-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 10px;
+  padding: 0 4px 0 2px;
+}
+.list-count {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.btn-small {
+  padding: 0.4rem 0.85rem;
+  font-size: 0.85rem;
+}
+.scan-warning {
+  margin: 0;
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+  color: var(--accent);
+  font-size: 0.85rem;
+}
+
+.photo-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.photo-row {
+  display: grid;
+  grid-template-columns: auto 112px minmax(0, 1fr) minmax(0, 1.4fr);
+  align-items: center;
+  gap: 16px;
+  padding: 10px 14px 10px 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.photo-row.is-selected {
+  border-color: rgba(232, 176, 75, 0.55);
+  background: #221f18;
+}
+
+.photo-check {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+.photo-check input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.checkmark {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 2px solid var(--muted);
+  border-radius: 50%;
+  transition: all 0.15s;
+}
+.photo-check input:checked + .checkmark {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.photo-check input:checked + .checkmark::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 3px;
+  width: 7px;
+  height: 13px;
+  border: solid var(--accent-ink);
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+.photo-check input:focus-visible + .checkmark {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.photo-thumb {
+  width: 112px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: var(--panel-2);
+}
+.photo-name {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.photo-path {
+  color: var(--muted);
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tag {
+  margin-left: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.photo-save {
+  font-size: 0.75rem;
+  min-height: 1.1em;
+  color: var(--muted);
+}
+.photo-save[data-state='saved'] {
+  color: var(--ok);
+}
+.photo-save[data-state='error'] {
+  color: var(--danger);
+}
+
+.photo-options {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 10px;
+}
+.wait-hint {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.72rem;
+  color: var(--accent);
+}
+.field span {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+
+@media (max-width: 760px) {
+  .photo-row {
+    grid-template-columns: auto 88px minmax(0, 1fr);
+  }
+  .photo-thumb {
+    width: 88px;
+    height: 66px;
+  }
+  .photo-options {
+    grid-column: 1 / -1;
+  }
+  .folder-row {
+    flex-wrap: wrap;
+  }
+  .folder-row input {
+    flex-basis: 100%;
+  }
+  .count {
+    display: none;
+  }
+}
+
+/* ---- slideshow ----------------------------------------------------------- */
+
+/* Photo fills the window; caption, duration bar and buttons sit along the bottom. */
+.slideshow {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #000;
+  overflow: hidden;
+}
+/* The photo is scaled to fit the whole window (up or down, never cropped);
+   the buttons and caption float over it. */
+.slide-stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.slide-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: fade-in 0.6s ease;
+}
+.slideshow-message {
+  color: var(--muted);
+  font-size: 1.2rem;
+  padding: 0 16px;
+  text-align: center;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* No frame or band: top and bottom areas share the window's black background. */
+.slide-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+}
+.slide-info {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+  font-size: 0.85rem;
+  color: #e6e0d4;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.6);
+}
+/* Buttons over a bright photo need a solid-ish backing to stay readable. */
+.slide-nav .btn-ghost {
+  background: rgba(0, 0, 0, 0.45);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+.slide-counter {
+  font-variant-numeric: tabular-nums;
+  color: #cfc8ba;
+}
+.slide-status {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.slide-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+.slide-pause {
+  min-width: 44px;
+  padding-left: 0.7rem;
+  padding-right: 0.7rem;
+}
+.slide-prev,
+.slide-next {
+  min-width: 112px;
+}
+.slide-exit {
+  margin-left: 8px;
+}
+
+.slide-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+.slide-caption {
+  margin: 0;
+  padding: 12px 16px 10px;
+  font-family: var(--display);
+  font-size: clamp(1.05rem, 2.2vw, 1.6rem);
+  line-height: 1.3;
+  text-align: center;
+  color: #fff;
+  /* No box: a shadow keeps the text readable over any photo. */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 0.8), 0 0 24px rgba(0, 0, 0, 0.5);
+  overflow-wrap: anywhere;
+}
+.slide-progress-track {
+  height: 4px;
+  overflow: hidden;
+}
+.slide-progress {
+  height: 100%;
+  width: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  animation-name: progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (max-width: 600px) {
+  .slide-top {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 8px 10px;
+  }
+  .slide-info {
+    flex-basis: 100%;
+    justify-content: center;
+  }
+  .slide-prev,
+  .slide-next {
+    min-width: 0;
+  }
+  .slide-exit {
+    margin-left: 0;
+  }
+}

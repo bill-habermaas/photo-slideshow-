@@ -1,0 +1,8 @@
+.env
+node_modules/
+frontend/dist/
+coverage/
+*.log
+backend/photo-slideshow-api
+backend/__debug_bin*
+.DS_Store

@@ -1,0 +1,13 @@
+{
+  "go.testFlags": ["-v"],
+  "go.testEnvVars": {},
+  "[go]": { "editor.formatOnSave": true },
+  "[typescript]": { "editor.defaultFormatter": "esbenp.prettier-vscode", "editor.formatOnSave": true },
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode", "editor.formatOnSave": true },
+  "[css]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "prettier.printWidth": 130,
+  "prettier.singleQuote": true,
+  "typescript.tsdk": "frontend/node_modules/typescript/lib",
+  "files.exclude": { "**/node_modules": true, "frontend/dist": true },
+  "search.exclude": { "**/node_modules": true, "frontend/dist": true }
+}
